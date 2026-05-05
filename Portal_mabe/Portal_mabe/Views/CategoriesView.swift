@@ -35,6 +35,7 @@ struct CategoriesView: View {
                     Spacer()
                     
                     // Notification Button with image asset label
+                    /*/
                     Button(action: {
                         // Placeholder for notification action
                         print("Notification tapped")
@@ -43,6 +44,7 @@ struct CategoriesView: View {
                             .resizable()
                             .frame(width: 32, height: 32)
                     }
+                     */
                 }
                 .padding(.horizontal)
                 .padding(.top, 20)
