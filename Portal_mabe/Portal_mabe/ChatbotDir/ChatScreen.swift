@@ -21,8 +21,6 @@ struct consultaDinamicaScreen: View {
     @State private var prompt = ""
     /// Tracks whether the assistant is currently generating a response.
     @State private var isLoading = false
-    /// Selects which system prompt profile will shape the assistant's tone and constraints.
-    @State private var selectedPersonality: ChatPersonality = .amaro
     /// Stores the visible conversation in chronological order for rendering and persistence.
     @State private var conversation: [ChatMessage] = [] // Oldest-first (top)
     /// Indicates whether live speech transcription is in progress.
@@ -37,8 +35,8 @@ struct consultaDinamicaScreen: View {
     @State private var orchestrator: ChatOrchestrator?
     @State private var hasRequestedNotificationPermission = false
 
-    private let chatBackground = Color(.secondary)
-    private let cardFill = Color(.background)
+    private let chatBackground = Color(.background)
+    private let cardFill = Color(.secondary).opacity(0.55)
 
     // Simple chat message model for the transcript
     private struct ChatMessage: Identifiable, Equatable, Codable {
@@ -60,9 +58,10 @@ struct consultaDinamicaScreen: View {
     /// Builds the ChatOrchestrator once we have access to the SwiftData ModelContext.
     private func makeOrchestrator(context: ModelContext) -> ChatOrchestrator {
         let retriever = KnowledgeRetriever(sources: [
-            //MedicineDatabaseSource(context: context),   // ← live DB source
-            //MockFAQSource(),
-            //MockAnalyticsSource()
+            EmployeeDatabaseSource(context: context, maxResults: 5),
+            DepartmentDatabaseSource(context: context, maxResults: 3),
+            RequestDatabaseSource(context: context, maxResults: 5),
+            WorkScheduleDatabaseSource(context: context, maxResults: 5)
         ])
         return ChatOrchestrator(retriever: retriever)
     }
@@ -73,7 +72,7 @@ struct consultaDinamicaScreen: View {
         let isUser = (role == .user)
         return Text(text)
             .font(.system(size: textSize))
-            .foregroundStyle(isUser ? .black : .main)
+            .foregroundStyle(isUser ? .main : .black)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .background(
@@ -116,8 +115,8 @@ struct consultaDinamicaScreen: View {
     private var headerBar: some View {
         HStack {
             Text("Consulta Dinámica")
-                .font(Font.largeTitle.bold())
-                .foregroundColor(.main)
+                .font(.custom("Futura Bold", size: 60))
+                .foregroundColor(.black)
             Spacer()
         }
         .padding(.horizontal)
@@ -142,18 +141,20 @@ struct consultaDinamicaScreen: View {
         prompt = ""
 
         Task {
-            let answer = await orchestrator.answer(userQuery: query, personality: selectedPersonality, detailed: isDetailed)
+            let answer = await orchestrator.answer(userQuery: query, detailed: isDetailed)
 
-            /// Append the used context text at the end of the assistant's response for transparency.
-            var contentWithContext = answer.content
+            /// Build the complete response with retrieval explanation and context
+            var fullResponse = answer.retrievalExplanation + "\n\n" + answer.content
+            
             if !answer.usedContext.isEmpty {
+                fullResponse += "\n\n📊 Detalles de la base de datos consultada:"
                 let contextBlock = answer.usedContext.enumerated()
-                    .map { "\($0 + 1). \($1)" }
-                    .joined(separator: "\n")
-                contentWithContext += "\n\nContexto usado:\n" + contextBlock
+                    .map { "\n\n[\($0 + 1)] \($1)" }
+                    .joined()
+                fullResponse += contextBlock
             }
 
-            let assistant = ChatMessage(role: .assistant, text: contentWithContext, context: answer.usedContext)
+            let assistant = ChatMessage(role: .assistant, text: fullResponse, context: answer.usedContext)
             await MainActor.run {
                 self.conversation.append(assistant)
                 self.isLoading = false

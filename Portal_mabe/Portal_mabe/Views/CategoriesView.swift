@@ -30,7 +30,8 @@ struct CategoriesView: View {
                 // MARK: - Header
                 HStack(alignment: .firstTextBaseline) {
                     Text("Categorías")
-                        .font(.system(size: 36, weight: .bold))
+                        .font(.custom("Futura Bold", size: 60))
+                        .foregroundColor(.black)
                     
                     Spacer()
                     

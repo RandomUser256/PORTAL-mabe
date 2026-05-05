@@ -6,16 +6,16 @@ struct userScreen: View {
     @State private var checkedTimes: Set<String> = []
 
     private var displayName: String {
-        [currentUser.user?.name ?? "Juan", currentUser.user?.middleName ?? "Carlos"]
+        [currentUser.user?.name ?? "Nombre", currentUser.user?.middleName ?? "Apellido"]
             .joined(separator: " ")
     }
 
     private var displayID: String {
-        "ID: \(currentUser.user?.id_employee ?? 10452)"
+        "ID: \(currentUser.user?.id_employee ?? 0000)"
     }
 
     private var displayRole: String {
-        currentUser.user?.employee_role.name ?? "Analista de Recursos"
+        currentUser.user?.employee_role.name ?? "Sin Ról"
     }
     
     private static let dayNames = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
@@ -51,8 +51,8 @@ struct userScreen: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Perfil")
-                        .font(.custom("Futura Bold", size: 80))
-                        .foregroundColor(.main)
+                        .font(.custom("Futura Bold", size: 60))
+                        .foregroundColor(.black)
 
                     Image("pm_PerfilData")
                         .resizable()

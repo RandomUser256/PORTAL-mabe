@@ -27,112 +27,102 @@ struct LoginView: View {
     let mabeDarkBlue = Color(red: 0.0, green: 0.2, blue: 0.4) // Approximated dark blue for gradient
     
     var body: some View {
-        ZStack {
-            // MARK: - Background Image and Overlay
-            // This loads the full-screen background image from your asset catalog.
-            Image("kitchen_background")
-                .resizable()
-                .aspectRatio(contentMode: .fit) // Or .fill
-                .ignoresSafeArea()
-                .aspectRatio(contentMode: .fill)
-                .edgesIgnoringSafeArea(.all)
-            
-            // Subtle black overlay for better text contrast
-            Color.black
-                .opacity(0.1)
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack {
-                // MARK: - Header (Top of screen)
-                HStack {
-                    // Title/Logo is an image asset from your catalog
-                    Image("mabe_name")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 25)
-                    
-                    Spacer()
-                    
-                    // Dropdown menu for selecting language recreated with SwiftUI's Menu
-                    Menu {
-                        ForEach(languages, id: \.self) { language in
-                            Button(action: {
-                                selectedLanguage = language
-                            }) {
-                                Text(language)
+        GeometryReader { geometry in
+            let isLandscape = geometry.size.width > geometry.size.height
+
+            ZStack {
+                Image("kitchen_background")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipped()
+
+                Color.black.opacity(0.1)
+
+                ScrollView {
+                    VStack(spacing: 0) {
+                        HStack {
+                            Image("mabe_name")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: max(geometry.size.height * 0.03, 18))
+
+                            Spacer()
+
+                            Menu {
+                                ForEach(languages, id: \.self) { language in
+                                    Button(action: {
+                                        selectedLanguage = language
+                                    }) {
+                                        Text(language)
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 5) {
+                                    Text(selectedLanguage)
+                                        .font(.subheadline)
+                                        .foregroundColor(.primary)
+
+                                    Image(systemName: "chevron.down")
+                                        .font(.caption)
+                                        .foregroundColor(.primary)
+                                }
                             }
                         }
-                    } label: {
-                        HStack(spacing: 5) {
-                            Text(selectedLanguage)
-                                .font(.subheadline)
-                                .foregroundColor(.primary)
-                            
-                            Image(systemName: "chevron.down")
-                                .font(.caption)
-                                .foregroundColor(.primary)
-                        }
-                    }
-                }
-                .containerRelativeFrame(.horizontal) { width, axis in
-                    width * 0.88
-                }
-                .padding(.top, 10)
-                .padding(.horizontal, 20)
-                
-                Spacer() // Pushes the main list to the bottom
-                
-                // MARK: - Main List of Pills (Bottom of screen)
-                VStack(spacing: 12) {
-                    // Custom pill views recreating the visual style
-                    MabePillButton(text: "Selecciona tu continente", gradient: LinearGradient(colors: [mabeCyan, mabeDarkBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
-                    
-                    MabePillButton(text: "Selecciona tu país", gradient: LinearGradient(colors: [mabeCyan, mabeDarkBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
-                    
-                    MabePillButton(text: "Selecciona tu sucursal", gradient: LinearGradient(colors: [mabeCyan, mabeDarkBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
-                    
-                    VStack(spacing: 10) {
-                        MabePillTextField(
-                            gradient: LinearGradient(colors: [.white, .init(white: 0.9)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                            collaboratorCode: $collaboratorCode,
-                            onSubmit: authenticate
-                        )
-                        
+                        .padding(.horizontal, geometry.size.width * 0.06)
+                        .padding(.top, 10)
 
-                        Button(action: authenticate) {
-                            Text("Ingresar")
-                                .font(.callout.weight(.semibold))
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .padding(.horizontal, 28)
-                                .background(
-                                    LinearGradient(
-                                        colors: [mabeDarkBlue, mabeCyan],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
+                        Spacer(minLength: isLandscape ? 20 : 0)
+
+                        VStack(spacing: 12) {
+                            MabePillButton(text: "Selecciona tu continente", gradient: LinearGradient(colors: [mabeCyan, mabeDarkBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
+
+                            MabePillButton(text: "Selecciona tu país", gradient: LinearGradient(colors: [mabeCyan, mabeDarkBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
+
+                            MabePillButton(text: "Selecciona tu sucursal", gradient: LinearGradient(colors: [mabeCyan, mabeDarkBlue], startPoint: .topLeading, endPoint: .bottomTrailing))
+
+                            VStack(spacing: 10) {
+                                MabePillTextField(
+                                    gradient: LinearGradient(colors: [.white, .init(white: 0.9)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                    collaboratorCode: $collaboratorCode,
+                                    onSubmit: authenticate
                                 )
-                                .clipShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
 
-                        if let authenticationError {
-                            Text(authenticationError)
-                                .font(.footnote)
-                                .foregroundColor(.white)
-                                .multilineTextAlignment(.center)
+                                Button(action: authenticate) {
+                                    Text("Ingresar")
+                                        .font(.callout.weight(.semibold))
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 14)
+                                        .padding(.horizontal, 28)
+                                        .background(
+                                            LinearGradient(
+                                                colors: [mabeDarkBlue, mabeCyan],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                        .clipShape(Capsule())
+                                }
+                                .buttonStyle(.plain)
+
+                                if let authenticationError {
+                                    Text(authenticationError)
+                                        .font(.footnote)
+                                        .foregroundColor(.white)
+                                        .multilineTextAlignment(.center)
+                                }
+                            }
                         }
+                        .frame(maxWidth: isLandscape ? min(geometry.size.width * 0.5, 500) : geometry.size.width * 0.88)
+                        .padding(.bottom, 20)
                     }
+                    .frame(minHeight: geometry.size.height)
                 }
-                .containerRelativeFrame(.horizontal) { width, axis in
-                    width * 0.9
-                }
-                .padding(.horizontal, 25)
-                .padding(.bottom, 20)
+                .scrollBounceBehavior(.basedOnSize)
             }
         }
-        .frame(width: .infinity)
+        .ignoresSafeArea()
         .onTapGesture {
             hideKeyboard()
         }
