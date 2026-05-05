@@ -73,7 +73,8 @@
       "phone": "+525559876543",
       "socialSecurityNumber": "IMSS-78-90-11-22",
       "bankNumber": "MX76012345678901234567",
-      "superior_id": null
+      "superior_id": null,
+      "salary": 0.0
     },
     {
       "id_employee": 2,
@@ -88,7 +89,8 @@
       "phone": "+525551112222",
       "socialSecurityNumber": "IMSS-85-44-33-22",
       "bankNumber": "MX76012345678901239999",
-      "superior_id": 1
+      "superior_id": 1,
+      "salary": 0.0
     },
     {
       "id_employee": 3,
@@ -103,7 +105,8 @@
       "phone": "+525557778888",
       "socialSecurityNumber": "IMSS-92-11-03-88",
       "bankNumber": "MX76012345678901237777",
-      "superior_id": 2
+      "superior_id": 2,
+      "salary": 0.0
     }
   ],
   "request_classes": [

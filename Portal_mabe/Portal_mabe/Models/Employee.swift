@@ -32,9 +32,10 @@ class Employee: Identifiable {
     var phone: String?
     var socialSecurityNumber: String?
     var bankNumber: String
+    var salary: Double
     
     
-    init(id_employee: Int, employee_role: Employee_roles, requests: [Requests], workdays: [Workday], overtime: [Overtime], employee_superior: Employee_superior, name: String, middleName: String? = nil, surname: String, second_surname: String? = nil, institutional_email: String, birthday: Date? = nil, emergency_contact: String? = nil, phone: String? = nil, socialSecurityNumber: String? = nil, bankNumber: String) {
+    init(id_employee: Int, employee_role: Employee_roles, requests: [Requests], workdays: [Workday], overtime: [Overtime], employee_superior: Employee_superior, name: String, middleName: String? = nil, surname: String, second_surname: String? = nil, institutional_email: String, birthday: Date? = nil, emergency_contact: String? = nil, phone: String? = nil, socialSecurityNumber: String? = nil, bankNumber: String, salary: Double) {
         self.id_employee = id_employee
         self.employee_role = employee_role
         self.requests = requests
@@ -51,5 +52,6 @@ class Employee: Identifiable {
         self.phone = phone
         self.socialSecurityNumber = socialSecurityNumber
         self.bankNumber = bankNumber
+        self.salary = salary
     }
 }
