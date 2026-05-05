@@ -63,44 +63,48 @@ struct DescriptionCard: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header asset (Gray rectangle)
             ZStack(alignment: .topLeading) {
                 Image("pm_SPECIFIC_element_0")
                     .resizable()
-                    .frame(height: 50)
+                    .scaledToFill()
                 
                 Text(text)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color(.black))
                     .padding()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .clipped()
             
-            // Body asset (Container rectangle)
             ZStack(alignment: .topLeading) {
                 Image("pm_SPECIFIC_element_1")
                     .resizable()
-                    .frame(height: 50)
+                    .scaledToFill()
                 
-                VStack {
+                VStack(alignment: .leading, spacing: 0) {
                     ForEach(requests) { request in
-                        HStack () {
+                        HStack(spacing: 12) {
                             Image("pm_SPECIFIC_element_2")
                                 .resizable()
-                                .containerRelativeFrame(.vertical) { height, axis in
-                                    height * 0.05
-                                }
-                                .containerRelativeFrame(.horizontal) { width, axis in
-                                    width * 0.1
-                                }
+                                .scaledToFit()
+                                .frame(width: 28, height: 28)
                             
                             Text(request.name)
                                 .font(.system(size: 16, weight: .semibold))
                                 .foregroundColor(Color(.black))
-                                .padding()
+                            
+                            Spacer(minLength: 0)
                         }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .clipped()
         }
         .fixedSize(horizontal: false, vertical: true)
     }
