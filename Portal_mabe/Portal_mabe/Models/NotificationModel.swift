@@ -1,5 +1,35 @@
 import Foundation
 import UserNotifications
+import Observation
+
+struct NotificationItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let body: String
+    let date: Date
+    var isRead: Bool = false
+}
+
+@Observable
+final class NotificationStore {
+    static let shared = NotificationStore()
+    var notifications: [NotificationItem] = []
+
+    func add(title: String, body: String) {
+        let item = NotificationItem(title: title, body: body, date: Date())
+        notifications.insert(item, at: 0)
+    }
+
+    var unreadCount: Int {
+        notifications.filter { !$0.isRead }.count
+    }
+
+    func markAllAsRead() {
+        for i in notifications.indices {
+            notifications[i].isRead = true
+        }
+    }
+}
 
 // General-purpose notification manager for app-wide use.
 final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
@@ -34,6 +64,10 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
                 print("Error delivering notification: \(error)")
             }
         }
+
+        DispatchQueue.main.async {
+            NotificationStore.shared.add(title: title, body: body)
+        }
     }
 
     // Send after a delay in seconds
@@ -49,6 +83,10 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             if let error = error {
                 print("Error scheduling notification: \(error)")
             }
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            NotificationStore.shared.add(title: title, body: body)
         }
     }
 
@@ -68,6 +106,11 @@ final class NotificationManager: NSObject, UNUserNotificationCenterDelegate {
             if let error = error {
                 print("Error scheduling calendar notification: \(error)")
             }
+        }
+
+        let delay = max(0, date.timeIntervalSinceNow)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            NotificationStore.shared.add(title: title, body: body)
         }
     }
 

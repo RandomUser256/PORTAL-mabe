@@ -10,3 +10,4 @@ struct consultScreen: View {
 #Preview {
     consultScreen()
 }
+
