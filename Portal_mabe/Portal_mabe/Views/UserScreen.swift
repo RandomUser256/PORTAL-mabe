@@ -3,6 +3,7 @@ import SwiftUI
 struct userScreen: View {
     @EnvironmentObject var currentUser: UserSettings
     @State private var showNotifications = false
+    @State private var checkedTimes: Set<String> = []
 
     private var displayName: String {
         [currentUser.user?.name ?? "Juan", currentUser.user?.middleName ?? "Carlos"]
@@ -24,22 +25,23 @@ struct userScreen: View {
         return f
     }()
 
-    private var displayJornada: [(day: String, hours: String)] {
+    private var displayJornada: [(day: String, startTime: String, endTime: String)] {
         if let workdays = currentUser.user?.workdays, !workdays.isEmpty {
             return workdays
                 .sorted { $0.weekDay < $1.weekDay }
                 .map { wd in
                     let day = (1...7).contains(wd.weekDay) ? Self.dayNames[wd.weekDay] : "Día \(wd.weekDay)"
-                    let hours = "\(Self.timeFormatter.string(from: wd.startTime)) - \(Self.timeFormatter.string(from: wd.endTime))"
-                    return (day, hours)
+                    let start = Self.timeFormatter.string(from: wd.startTime)
+                    let end = Self.timeFormatter.string(from: wd.endTime)
+                    return (day, start, end)
                 }
         } else {
             return [
-                ("Lunes", "08:00 - 17:00"),
-                ("Martes", "08:00 - 17:00"),
-                ("Miércoles", "08:00 - 17:00"),
-                ("Jueves", "08:00 - 17:00"),
-                ("Viernes", "08:00 - 15:00")
+                ("Lunes", "08:00", "17:00"),
+                ("Martes", "08:00", "17:00"),
+                ("Miércoles", "08:00", "17:00"),
+                ("Jueves", "08:00", "17:00"),
+                ("Viernes", "08:00", "15:00")
             ]
         }
     }
@@ -102,29 +104,90 @@ struct userScreen: View {
                         .font(.custom("Frutiger LT Std 65 Bold", size: 50))
                         .foregroundColor(.main)
                         .padding(.leading)
-                    Image("pm_Desglose_Registro")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .overlay {
-                            GeometryReader { geo in
-                                let fontSize = geo.size.height / CGFloat(max(displayJornada.count, 1)) * 0.55
-                                VStack(alignment: .leading, spacing: geo.size.height * 0.02) {
-                                    ForEach(Array(displayJornada.enumerated()), id: \.offset) { _, entry in
-                                        HStack {
-                                            Text(entry.day)
-                                                .fontWeight(.semibold)
-                                            Spacer()
-                                            Text(entry.hours)
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(Array(displayJornada.enumerated()), id: \.offset) { _, entry in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(entry.day)
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundColor(.main)
+                                    .padding(.leading, 4)
+
+                                HStack(spacing: 0) {
+                                    Image("pm_CTA")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .overlay {
+                                            GeometryReader { ctaGeo in
+                                                HStack(spacing: ctaGeo.size.width * 0.03) {
+                                                    Button {
+                                                        let key = "\(entry.day)-start"
+                                                        if checkedTimes.contains(key) {
+                                                            checkedTimes.remove(key)
+                                                        } else {
+                                                            checkedTimes.insert(key)
+                                                        }
+                                                    } label: {
+                                                        Image(checkedTimes.contains("\(entry.day)-start") ? "pm_ECLIPSE_default" : "pm_ECLIPSE_ring")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                            .frame(height: ctaGeo.size.height * 0.5)
+                                                    }
+                                                    .buttonStyle(.plain)
+
+                                                    Text("Check-in: ")
+                                                        .font(.system(size: ctaGeo.size.height * 0.35, weight: .medium))
+                                                        .foregroundColor(.main)
+                                                    Text(entry.startTime)
+                                                        .font(.system(size: ctaGeo.size.height * 0.35, weight: .medium))
+                                                        .foregroundColor(.main)
+                                                }
+                                                .padding(.leading, ctaGeo.size.width * 0.06)
+                                                .frame(width: ctaGeo.size.width, height: ctaGeo.size.height, alignment: .leading)
+                                            }
                                         }
-                                        .font(.system(size: fontSize))
-                                        .foregroundColor(.main)
-                                    }
+
+                                    Image("pm_CTA")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .overlay {
+                                            GeometryReader { ctaGeo in
+                                                HStack(spacing: ctaGeo.size.width * 0.03) {
+                                                    Button {
+                                                        let key = "\(entry.day)-end"
+                                                        if checkedTimes.contains(key) {
+                                                            checkedTimes.remove(key)
+                                                        } else {
+                                                            checkedTimes.insert(key)
+                                                        }
+                                                    } label: {
+                                                        Image(checkedTimes.contains("\(entry.day)-end") ? "pm_ECLIPSE_default" : "pm_ECLIPSE_ring")
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fit)
+                                                            .frame(height: ctaGeo.size.height * 0.5)
+                                                    }
+                                                    .buttonStyle(.plain)
+
+                                                    Text("Check-out: ")
+                                                        .font(.system(size: ctaGeo.size.height * 0.35, weight: .medium))
+                                                        .foregroundColor(.main)
+                                                    Text(entry.endTime)
+                                                        .font(.system(size: ctaGeo.size.height * 0.35, weight: .medium))
+                                                        .foregroundColor(.main)
+                                                }
+                                                .padding(.leading, ctaGeo.size.width * 0.06)
+                                                .frame(width: ctaGeo.size.width, height: ctaGeo.size.height, alignment: .leading)
+                                            }
+                                        }
                                 }
-                                .padding(.horizontal, geo.size.width * 0.06)
-                                .padding(.vertical, geo.size.height * 0.08)
-                                .frame(width: geo.size.width, height: geo.size.height, alignment: .topLeading)
                             }
                         }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 20)
+                    .background {
+                        Image("pm_Desglose_Registro")
+                            .resizable()
+                    }
                     Text("Nóminas")
                         .font(.custom("Frutiger LT Std 65 Bold", size: 50))
                         .foregroundColor(.main)
@@ -155,9 +218,8 @@ struct userScreen: View {
                             ZStack {
                                 Image("pm_ICON_NOTIF")
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
+                                    .aspectRatio(contentMode: .fill)
                             }
-                            //.frame(width: 58, height: 58)
                             .accessibilityLabel("Notificaciones")
                             if NotificationStore.shared.unreadCount > 0 {
                                 Text("\(NotificationStore.shared.unreadCount)")
