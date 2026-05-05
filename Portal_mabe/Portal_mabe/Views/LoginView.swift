@@ -7,6 +7,7 @@
 import SwiftUI
 import SwiftData
 
+/*
 struct LoginView: View {
     @EnvironmentObject private var userSettings: UserSettings
     
@@ -179,3 +180,4 @@ struct LoginView: View {
         .padding(.top, 28)
     }
 }
+*/
