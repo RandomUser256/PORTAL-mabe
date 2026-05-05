@@ -2,32 +2,38 @@ import SwiftUI
 
 struct ContentView: View {
     enum Tab {
-        case profile
-        case consult
-        case chat
+        case menu
+        case perfil
+        case consulta
     }
 
-    @State private var selectedTab: Tab = .profile
+    @State private var selectedTab: Tab = .perfil
 
     var body: some View {
         TabView {
-            consultScreen()
+            menuScreen()
                 .tabItem {
-                    Label("Consult", systemImage: "doc.text.magnifyingglass")
+                    Image("pm_ICON_MENU")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                 }
-                .tag(Tab.consult)
+                .tag(Tab.menu)
             
             userScreen()
                 .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
+                    Image("pm_ICON_PERFIL")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                 }
-                .tag(Tab.profile)
+                .tag(Tab.perfil)
             
-            chatScreen()
+            consultaDinamicaScreen()
                 .tabItem {
-                    Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                    Image("pm_ICON_CONSULTADINÁMIC")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                 }
-                .tag(Tab.chat)
+                .tag(Tab.consulta)
         }
     }
 }

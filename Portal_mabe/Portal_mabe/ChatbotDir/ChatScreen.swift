@@ -10,7 +10,7 @@ import FoundationModels
 import UserNotifications
 
 /// Presents the pharmacy chat interface, manages transcript state, and bridges UI actions to the chat orchestrator.
-struct chatScreen: View {
+struct consultaDinamicaScreen: View {
     // Used to call swiftData model actions
     @Environment(\.modelContext) private var modelContext
 
@@ -37,8 +37,8 @@ struct chatScreen: View {
     @State private var orchestrator: ChatOrchestrator?
     @State private var hasRequestedNotificationPermission = false
 
-    private let chatBackground = Color(.background)
-    private let cardFill = Color(.secondary)
+    private let chatBackground = Color(.secondary)
+    private let cardFill = Color(.background)
 
     // Simple chat message model for the transcript
     private struct ChatMessage: Identifiable, Equatable, Codable {
@@ -73,7 +73,7 @@ struct chatScreen: View {
         let isUser = (role == .user)
         return Text(text)
             .font(.system(size: textSize))
-            .foregroundStyle(isUser ? .main : .black)
+            .foregroundStyle(isUser ? .black : .main)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .background(
@@ -115,7 +115,7 @@ struct chatScreen: View {
     /// Displays the screen title and links into the chat configuration controls.
     private var headerBar: some View {
         HStack {
-            Text("Chat")
+            Text("Consulta Dinámica")
                 .font(Font.largeTitle.bold())
                 .foregroundColor(.main)
             Spacer()

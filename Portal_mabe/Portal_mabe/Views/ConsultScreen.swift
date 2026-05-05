@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct consultScreen: View {
+struct menuScreen: View {
     var body: some View {
         Text("Hello, World! (Consult)")
             .padding()
@@ -8,6 +8,6 @@ struct consultScreen: View {
 }
 
 #Preview {
-    consultScreen()
+    menuScreen()
 }
 
