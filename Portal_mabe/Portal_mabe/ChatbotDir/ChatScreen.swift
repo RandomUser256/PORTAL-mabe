@@ -226,6 +226,7 @@ struct chatScreen: View {
                         scrollToBottom(proxy)
                         //saveConversation()
                     }
+                    .scrollDismissesKeyboard(.interactively)
                 }
 
                 /// Input area
@@ -244,11 +245,24 @@ struct chatScreen: View {
                         .accessibilityHint("Escribe la consulta que quieres enviar")
 
                     Button(action: generate) {
-                        circularActionButton(
-                            systemName: "paperplane.fill",
-                            label: "Enviar mensaje",
-                            isLoading: isLoading
-                        )
+                        ZStack {
+                            Image("pm_ECLIPSE_default")
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(Circle())
+
+                            if isLoading {
+                                ProgressView()
+                                    .tint(.background)
+                            } else {
+                                Image(systemName: "paperplane.fill")
+                                    .font(.system(size: 22, weight: .semibold))
+                                    .foregroundColor(.background)
+                            }
+                        }
+                        .frame(width: 58, height: 58)
+                        .brightness(prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.3 : 0)
+                        .accessibilityLabel("Enviar mensaje")
                     }
                     .disabled(prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
                     .buttonStyle(.plain)
