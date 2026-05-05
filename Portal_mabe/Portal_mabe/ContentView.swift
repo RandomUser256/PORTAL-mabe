@@ -11,21 +11,22 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            consultScreen()
+            //Change preset for dynamic information
+            CategoriesView(options: [CategoryOption(), CategoryOption(), CategoryOption(), CategoryOption()])
                 .tabItem {
-                    Label("Consult", systemImage: "doc.text.magnifyingglass")
+                    Label("Consult", image: "pm_ICON_MENU")
                 }
                 .tag(Tab.consult)
             
             userScreen()
                 .tabItem {
-                    Label("Profile", systemImage: "person.crop.circle")
+                    Label("Profile", image: "pm_ICON_PERFIL")
                 }
                 .tag(Tab.profile)
             
             chatScreen()
                 .tabItem {
-                    Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                    Label("Chat", image: "pm_ICON_CONSULTADINÁMIC")
                 }
                 .tag(Tab.chat)
         }

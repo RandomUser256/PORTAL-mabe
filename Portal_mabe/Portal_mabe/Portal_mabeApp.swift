@@ -21,31 +21,24 @@ class UserSettings: ObservableObject {
 
 @main
 struct Portal_mabeApp: App {
-    //Persisted storage indicator if dataset has previously been loaded
-    @AppStorage("didPrepopulateStore") private var didPrepopulate: Bool = false
-    
-    //SET TO TRUE FOR DEBUG PURPOSES
-    @State private var isReadyToBoot: Bool = true
-    
-    //SET TRUE FOR DEBUG PURPOSES
-    @State private var shouldShowMainMenu: Bool = true
+    @State private var isReadyToBoot: Bool = false
     @StateObject private var userSettings = UserSettings()
-    
-    //Message for debugging purposes
-    @State private var loadingMessage: String = "Preparing data…"
         
     //Loads different SwiftData schema
     var sharedModelContainer: ModelContainer
 
     var body: some Scene {
         WindowGroup {
-            if shouldShowMainMenu {
+            if isReadyToBoot {
                 ContentView()
                     .environmentObject(userSettings)
-            } /*else {
-                LoginView()
-                    .environmentObject(userSettings)
-            }*/
+            } else {
+                LoginView { employee in
+                    userSettings.user = employee
+                    isReadyToBoot = true
+                }
+                .environmentObject(userSettings)
+            }
         }
         .modelContainer(sharedModelContainer)
     }
@@ -101,26 +94,6 @@ struct Portal_mabeApp: App {
         
         print(files ?? [])
     }
-    
-    /// Verifies that the local medicine store is accessible before enabling the main menu.
-        @MainActor
-        private func prepareBoot() async {
-            guard !isReadyToBoot else { return }
-
-            loadingMessage = "Verificando la base local de la planta…"
-            await Task.yield()
-
-            let context = ModelContext(sharedModelContainer)
-            
-            //Verify that the employee database is not empty
-            let employeeCount = (try? context.fetchCount(FetchDescriptor<Employee>())) ?? 0
-
-
-            loadingMessage = employeeCount > 0
-                ? "Base de datos lista. Puedes continuar."
-                : "No se cargó existosamente la base de datos."
-            isReadyToBoot = true
-        }
 }
 
 /// Copies the bundled SwiftData store into Application Support the first time the app launches.

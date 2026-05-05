@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8846285F2FAA2DD60073DDFA /* TPPDF in Frameworks */ = {isa = PBXBuildFile; productRef = 8846285E2FAA2DD60073DDFA /* TPPDF */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2DD222E52FA9BE54005679B6 /* Portal_mabe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Portal_mabe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8846285F2FAA2DD60073DDFA /* TPPDF in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +62,7 @@
 			);
 			name = Portal_mabe;
 			packageProductDependencies = (
+				8846285E2FAA2DD60073DDFA /* TPPDF */,
 			);
 			productName = Portal_mabe;
 			productReference = 2DD222E52FA9BE54005679B6 /* Portal_mabe.app */;
@@ -86,6 +92,9 @@
 			);
 			mainGroup = 2DD222B52FA9B561005679B6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8846285D2FAA2DD60073DDFA /* XCRemoteSwiftPackageReference "TPPDF" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2DD222B52FA9B561005679B6;
 			projectDirPath = "";
@@ -238,6 +247,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 245Z8W3NK4;
@@ -263,6 +273,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "cetys.STAR.Portal-mabe";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -282,6 +293,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 245Z8W3NK4;
@@ -307,6 +319,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "cetys.STAR.Portal-mabe";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -343,6 +356,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8846285D2FAA2DD60073DDFA /* XCRemoteSwiftPackageReference "TPPDF" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/techprimate/TPPDF";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8846285E2FAA2DD60073DDFA /* TPPDF */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8846285D2FAA2DD60073DDFA /* XCRemoteSwiftPackageReference "TPPDF" */;
+			productName = TPPDF;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2DD222B62FA9B561005679B6 /* Project object */;
 }

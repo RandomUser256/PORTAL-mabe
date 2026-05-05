@@ -108,7 +108,8 @@ enum DataImportModel {
                 emergency_contact: employeeRecord.emergency_contact,
                 phone: employeeRecord.phone,
                 socialSecurityNumber: employeeRecord.socialSecurityNumber,
-                bankNumber: employeeRecord.bankNumber
+                bankNumber: employeeRecord.bankNumber,
+                salary: employeeRecord.salary
             )
 
             employeeSuperior.employee = employee
@@ -269,6 +270,7 @@ private extension DataImportModel {
         let phone: String?
         let socialSecurityNumber: String?
         let bankNumber: String
+        let salary: Double
         let superior_id: Int?
     }
 
