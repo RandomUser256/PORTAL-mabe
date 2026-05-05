@@ -1,0 +1,276 @@
+//
+//  chatScreen.swift
+//  HealthPoint
+//
+//  Created by Máximo on 4/14/26.
+//
+import SwiftUI
+import SwiftData
+import FoundationModels
+import UserNotifications
+
+/// Presents the pharmacy chat interface, manages transcript state, and bridges UI actions to the chat orchestrator.
+struct chatScreen: View {
+    // Used to call swiftData model actions
+    @Environment(\.modelContext) private var modelContext
+
+    // References global environmentObject of current user
+    @EnvironmentObject var currentUser: UserSettings
+
+    /// Current text waiting to be sent to the assistant.
+    @State private var prompt = ""
+    /// Tracks whether the assistant is currently generating a response.
+    @State private var isLoading = false
+    /// Selects which system prompt profile will shape the assistant's tone and constraints.
+    @State private var selectedPersonality: ChatPersonality = .amaro
+    /// Stores the visible conversation in chronological order for rendering and persistence.
+    @State private var conversation: [ChatMessage] = [] // Oldest-first (top)
+    /// Indicates whether live speech transcription is in progress.
+    @State private var isRecording = false
+    /// Switches between concise and more detailed assistant responses.
+    @State private var isDetailed = false
+    /// User-adjustable font size used for chat bubbles.
+    @State private var titleSize: Double = 34
+    @State private var textSize: Double = 17
+
+    // Lazily built on first .onAppear so modelContext is available.
+    @State private var orchestrator: ChatOrchestrator?
+    @State private var hasRequestedNotificationPermission = false
+
+    private let chatBackground = Color(.background)
+    private let cardFill = Color(.secondary)
+
+    // Simple chat message model for the transcript
+    private struct ChatMessage: Identifiable, Equatable, Codable {
+        enum Role: String, Codable { case user, assistant }
+        let id: UUID
+        let role: Role
+        let text: String
+        let context: [String]?
+
+        init(id: UUID = UUID(), role: Role, text: String, context: [String]?) {
+            self.id = id
+            self.role = role
+            self.text = text
+            self.context = context
+        }
+    }
+
+    // MARK: - Orchestrator factory
+    /// Builds the ChatOrchestrator once we have access to the SwiftData ModelContext.
+    private func makeOrchestrator(context: ModelContext) -> ChatOrchestrator {
+        let retriever = KnowledgeRetriever(sources: [
+            //MedicineDatabaseSource(context: context),   // ← live DB source
+            //MockFAQSource(),
+            //MockAnalyticsSource()
+        ])
+        return ChatOrchestrator(retriever: retriever)
+    }
+
+    // MARK: - Components
+    /// Renders a single message bubble with styling based on whether it belongs to the user or assistant.
+    private func bubble(text: String, role: ChatMessage.Role) -> some View {
+        let isUser = (role == .user)
+        return Text(text)
+            .font(.system(size: textSize))
+            .foregroundStyle(isUser ? .main : .black)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(isUser ? Color(.background).opacity(0.55) : cardFill)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .stroke(Color(.secondary).opacity(isUser ? 0.9 : 0.55), lineWidth: 1.5)
+                    )
+            )
+            .frame(maxWidth: .infinity, alignment: isUser ? .trailing : .leading)
+            .accessibilityLabel("\(isUser ? "Tu mensaje" : "Respuesta del asistente"): \(text)")
+    }
+
+    /// Builds a reusable circular button for the input toolbar, optionally replacing the icon with a spinner.
+    private func circularActionButton(systemName: String, label: String, isLoading: Bool = false) -> some View {
+        ZStack {
+            Circle()
+                .fill(.main)
+                .overlay(Circle().stroke(Color(.secondary), lineWidth: 1.5))
+
+            if isLoading {
+                ProgressView()
+                    .tint(.main)
+            } else {
+                Image(systemName: systemName)
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundColor(.background)
+            }
+        }
+        .frame(width: 58, height: 58)
+        .accessibilityLabel(label)
+    }
+
+    private var inputContainer: some ShapeStyle {
+        cardFill
+    }
+
+    /// Displays the screen title and links into the chat configuration controls.
+    private var headerBar: some View {
+        HStack {
+            Text("Chat")
+                .font(Font.largeTitle.bold())
+                .foregroundColor(.main)
+            Spacer()
+        }
+        .padding(.horizontal)
+    }
+
+    /// Keeps the newest message visible after loading or appending conversation entries.
+    private func scrollToBottom(_ proxy: ScrollViewProxy) {
+        guard let lastID = conversation.last?.id else { return }
+        withAnimation {
+            proxy.scrollTo(lastID, anchor: .bottom)
+        }
+    }
+
+    // MARK: - Actions
+    /// Sends the current prompt to the orchestrator, appends both sides of the exchange, and captures retrieved context.
+    private func generate() {
+        let query = prompt.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty, let orchestrator else { return }
+
+        isLoading = true
+        conversation.append(ChatMessage(role: .user, text: query, context: nil))
+        prompt = ""
+
+        Task {
+            let answer = await orchestrator.answer(userQuery: query, personality: selectedPersonality, detailed: isDetailed)
+
+            /// Append the used context text at the end of the assistant's response for transparency.
+            var contentWithContext = answer.content
+            if !answer.usedContext.isEmpty {
+                let contextBlock = answer.usedContext.enumerated()
+                    .map { "\($0 + 1). \($1)" }
+                    .joined(separator: "\n")
+                contentWithContext += "\n\nContexto usado:\n" + contextBlock
+            }
+
+            let assistant = ChatMessage(role: .assistant, text: contentWithContext, context: answer.usedContext)
+            await MainActor.run {
+                self.conversation.append(assistant)
+                self.isLoading = false
+            }
+        }
+    }
+
+    // MARK: - Persistence
+    /// Persists the current conversation locally under the active user's storage key.
+    /*private func saveConversation() {
+        do {
+            let data = try JSONEncoder().encode(conversation)
+            UserDefaults.standard.set(data, forKey: conversationStorageKey())
+        } catch { }
+    }
+
+    /// Restores the last saved conversation for the active user, if one exists.
+    private func loadConversation() {
+        guard let data = UserDefaults.standard.data(forKey: conversationStorageKey()) else { return }
+        do {
+            conversation = try JSONDecoder().decode([ChatMessage].self, from: data)
+        } catch { }
+    }*/
+
+    /// Clears both the on-screen conversation and its persisted copy.
+    private func clearConversation() {
+        conversation.removeAll()
+        //saveConversation()
+        prompt = ""
+    }
+
+    var body: some View {
+        ZStack {
+            chatBackground
+                .ignoresSafeArea()
+
+            VStack(spacing: 12) {
+                headerBar
+
+                /// Conversation view (oldest messages at the top, newest at the bottom)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 8) {
+                            ForEach(conversation) { message in
+                                HStack {
+                                    if message.role == .assistant {
+                                        bubble(text: message.text, role: .assistant)
+                                        Spacer(minLength: 30)
+                                    } else {
+                                        Spacer(minLength: 30)
+                                        bubble(text: message.text, role: .user)
+                                    }
+                                }
+                                .padding(.horizontal)
+                                .id(message.id)
+                            }
+                        }
+                        .padding(.top, 4)
+                    }
+                    .onAppear {
+                        if orchestrator == nil { orchestrator = makeOrchestrator(context: modelContext) }
+                        if !hasRequestedNotificationPermission {
+                            requestNotificationPermission()
+                            hasRequestedNotificationPermission = true
+                        }
+                        //loadConversation()
+                        scrollToBottom(proxy)
+                    }
+                    .onChange(of: conversation.count) { _, _ in
+                        scrollToBottom(proxy)
+                        //saveConversation()
+                    }
+                }
+
+                /// Input area
+                HStack(alignment: .bottom, spacing: 8) {
+                    TextField("Escribe un mensaje...", text: $prompt, axis: .vertical)
+                        .font(.system(size: textSize))
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 18)
+                                .fill(inputContainer)
+                        )
+                        .lineLimit(3, reservesSpace: true)
+                        .padding()
+                        .accessibilityLabel("Campo de mensaje")
+                        .accessibilityHint("Escribe la consulta que quieres enviar")
+
+                    Button(action: generate) {
+                        circularActionButton(
+                            systemName: "paperplane.fill",
+                            label: "Enviar mensaje",
+                            isLoading: isLoading
+                        )
+                    }
+                    .disabled(prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Envía tu mensaje al asistente")
+                }
+                .padding(.horizontal)
+                .padding(.bottom)
+            }
+            .onChange(of: isLoading) { oldValue, newValue in
+                if newValue {
+                    NotificationManager.shared.notify(event: .chatLoading(prompt: nil))
+                }
+            }
+            /// Loading overlay
+            if isLoading {
+                /*Color.black.opacity(0.15).ignoresSafeArea()
+                ProgressView("Generando respuesta...")
+                    .padding(20)
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Color(.foreground)))
+                    .tint(.universalAccent)*/
+            }
+        }
+        .navigationBarBackButtonHidden(false)
+    }
+}
