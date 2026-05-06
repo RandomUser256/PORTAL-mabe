@@ -37,7 +37,7 @@ enum DataImportModel {
 
     static func importIfNeeded(
         into modelContainer: ModelContainer,
-        resourceName: String = "dataSet",
+        resourceName: String = "dataSet_extensive",
         bundle: Bundle = .main
     ) throws {
         let context = ModelContext(modelContainer)

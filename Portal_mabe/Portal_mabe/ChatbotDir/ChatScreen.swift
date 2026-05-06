@@ -10,7 +10,7 @@ import FoundationModels
 import UserNotifications
 
 /// Presents the pharmacy chat interface, manages transcript state, and bridges UI actions to the chat orchestrator.
-struct chatScreen: View {
+struct consultaDinamicaScreen: View {
     // Used to call swiftData model actions
     @Environment(\.modelContext) private var modelContext
 
@@ -37,8 +37,8 @@ struct chatScreen: View {
     @State private var orchestrator: ChatOrchestrator?
     @State private var hasRequestedNotificationPermission = false
 
-    private let chatBackground = Color(.background)
-    private let cardFill = Color(.secondary)
+    private let chatBackground = Color(.secondary)
+    private let cardFill = Color(.background)
 
     // Simple chat message model for the transcript
     private struct ChatMessage: Identifiable, Equatable, Codable {
@@ -73,7 +73,7 @@ struct chatScreen: View {
         let isUser = (role == .user)
         return Text(text)
             .font(.system(size: textSize))
-            .foregroundStyle(isUser ? .main : .black)
+            .foregroundStyle(isUser ? .black : .main)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .background(
@@ -115,7 +115,7 @@ struct chatScreen: View {
     /// Displays the screen title and links into the chat configuration controls.
     private var headerBar: some View {
         HStack {
-            Text("Chat")
+            Text("Consulta Dinámica")
                 .font(Font.largeTitle.bold())
                 .foregroundColor(.main)
             Spacer()
@@ -226,6 +226,7 @@ struct chatScreen: View {
                         scrollToBottom(proxy)
                         //saveConversation()
                     }
+                    .scrollDismissesKeyboard(.interactively)
                 }
 
                 /// Input area
@@ -244,11 +245,24 @@ struct chatScreen: View {
                         .accessibilityHint("Escribe la consulta que quieres enviar")
 
                     Button(action: generate) {
-                        circularActionButton(
-                            systemName: "paperplane.fill",
-                            label: "Enviar mensaje",
-                            isLoading: isLoading
-                        )
+                        ZStack {
+                            Image("pm_ECLIPSE_default")
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(Circle())
+
+                            if isLoading {
+                                ProgressView()
+                                    .tint(.background)
+                            } else {
+                                Image(systemName: "paperplane.fill")
+                                    .font(.system(size: 22, weight: .semibold))
+                                    .foregroundColor(.background)
+                            }
+                        }
+                        .frame(width: 58, height: 58)
+                        .brightness(prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.3 : 0)
+                        .accessibilityLabel("Enviar mensaje")
                     }
                     .disabled(prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
                     .buttonStyle(.plain)

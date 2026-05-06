@@ -2137,147 +2137,186 @@
       "id_request_classification": 501,
       "name": "Nóminas y Descuentos",
       "id_department": 3,
-      "request_class_description": "Consultas y solicitudes relacionadas con nómina, bonos y descuentos salariales."
+      "request_class_description": "Consultas y movimientos relacionados con recibos de nómina, descuentos aplicados, bonos, aclaraciones de pago y documentos fiscales del colaborador."
     },
     {
       "id_request_classification": 502,
       "name": "Créditos y Aportaciones Infonavit",
       "id_department": 3,
-      "request_class_description": "Gestión de créditos Infonavit y aportaciones de vivienda."
+      "request_class_description": "Seguimiento de créditos hipotecarios, cartas patronales, aclaraciones de aportaciones y trámites vinculados con Infonavit."
     },
     {
       "id_request_classification": 503,
       "name": "Caja de Ahorro",
       "id_department": 3,
-      "request_class_description": "Operaciones de depósito, retiro y consulta de caja de ahorro."
+      "request_class_description": "Operaciones frecuentes de consulta, ingreso, retiro y actualización de metas para la caja de ahorro del personal."
     },
     {
       "id_request_classification": 504,
       "name": "Permisos y Beneficios",
       "id_department": 3,
-      "request_class_description": "Solicitudes de vacaciones, permisos y beneficios laborales."
+      "request_class_description": "Solicitudes de vacaciones, permisos especiales, beneficios por maternidad o paternidad y otros apoyos administrados por Recursos Humanos."
     },
     {
       "id_request_classification": 505,
       "name": "Actualización de Datos y Accesos",
       "id_department": 3,
-      "request_class_description": "Cambios en datos personales, correos y actualización de accesos."
+      "request_class_description": "Cambios de datos personales, actualización de contactos, recuperación de accesos y ajustes en cuentas institucionales."
     },
     {
       "id_request_classification": 506,
       "name": "Temas Generales",
       "id_department": 3,
-      "request_class_description": "Consultas generales y otros temas administrativos."
-    },
-    {
-      "id_request_classification": 507,
-      "name": "Equipo y Herramientas",
-      "id_department": 4,
-      "request_class_description": "Reportes de falla de herramientas o reemplazo de EPP."
+      "request_class_description": "Espacio para consultas administrativas generales, seguimiento de políticas internas y orientación sobre procesos del portal."
     }
   ],
   "requests": [
     {
       "id_request": 1001,
-      "name": "Solicitud de Nómina",
-      "request_description": "Solicitud de comprobante de nómina y estado de cuenta.",
-      "id_request_classification": 501
+      "name": "Solicitud de nómina",
+      "request_description": "Generación o reenvío del recibo de nómina más reciente para consulta o impresión.",
+      "id_request_classification": 501,
+      "id_employee": 15
     },
     {
       "id_request": 1002,
-      "name": "Consulta de Descuentos",
-      "request_description": "Consulta sobre descuentos aplicados al salario.",
-      "id_request_classification": 501
+      "name": "Aclaración de descuentos",
+      "request_description": "Revisión de descuentos aplicados en nómina por faltas, préstamos, IMSS u otros conceptos.",
+      "id_request_classification": 501,
+      "id_employee": 30
     },
     {
       "id_request": 1003,
-      "name": "Solicitud de Crédito Infonavit",
-      "request_description": "Solicitud de acceso y estado de crédito Infonavit.",
-      "id_request_classification": 502
+      "name": "Carta patronal Infonavit",
+      "request_description": "Emisión de carta patronal para integrar expediente de crédito o reestructura Infonavit.",
+      "id_request_classification": 502,
+      "id_employee": 22
     },
     {
       "id_request": 1004,
-      "name": "Aportación Infonavit",
-      "request_description": "Registro de aportaciones mensuales a Infonavit.",
-      "id_request_classification": 502
+      "name": "Consulta de aportaciones Infonavit",
+      "request_description": "Consulta del histórico de aportaciones patronales registradas ante Infonavit.",
+      "id_request_classification": 502,
+      "id_employee": 18
     },
     {
       "id_request": 1005,
-      "name": "Consulta Caja de Ahorro",
-      "request_description": "Consulta del saldo y movimientos en caja de ahorro.",
-      "id_request_classification": 503
+      "name": "Consulta caja de ahorro",
+      "request_description": "Consulta del saldo disponible, movimientos recientes y rendimiento acumulado en caja de ahorro.",
+      "id_request_classification": 503,
+      "id_employee": 50
     },
     {
       "id_request": 1006,
-      "name": "Retiro de Caja de Ahorro",
-      "request_description": "Solicitud de retiro de fondos de caja de ahorro.",
-      "id_request_classification": 503
+      "name": "Retiro caja de ahorro",
+      "request_description": "Solicitud de retiro parcial o total de fondos registrados en la caja de ahorro.",
+      "id_request_classification": 503,
+      "id_employee": 40
     },
     {
       "id_request": 1007,
-      "name": "Ingreso a Caja de Ahorro",
-      "request_description": "Depósito de ahorros en la caja de ahorro.",
-      "id_request_classification": 503
+      "name": "Ingreso caja de ahorro",
+      "request_description": "Alta o incremento de aportación voluntaria a la caja de ahorro del colaborador.",
+      "id_request_classification": 503,
+      "id_employee": 12
     },
     {
       "id_request": 1008,
-      "name": "Solicitud de Vacaciones",
-      "request_description": "Solicitud para disfrutar de días de vacaciones anuales.",
-      "id_request_classification": 504
+      "name": "Solicitud vacaciones",
+      "request_description": "Solicitud de días de vacaciones con validación de saldo disponible y autorización del jefe directo.",
+      "id_request_classification": 504,
+      "id_employee": 3
     },
     {
       "id_request": 1009,
-      "name": "Permiso Temporal",
-      "request_description": "Solicitud de permiso temporal por asuntos personales.",
-      "id_request_classification": 504
+      "name": "Permiso personal",
+      "request_description": "Solicitud de permiso temporal por asuntos personales o familiares con impacto en jornada.",
+      "id_request_classification": 504,
+      "id_employee": 10
     },
     {
       "id_request": 1010,
-      "name": "Tiempo Baja por Maternidad",
-      "request_description": "Registro y solicitud de baja por maternidad.",
-      "id_request_classification": 504
+      "name": "Baja por maternidad",
+      "request_description": "Registro y seguimiento de incapacidad o baja por maternidad conforme a lineamientos vigentes.",
+      "id_request_classification": 504,
+      "id_employee": 66
     },
     {
       "id_request": 1011,
-      "name": "Permiso por Paternidad",
-      "request_description": "Solicitud de permiso por paternidad.",
-      "id_request_classification": 504
+      "name": "Permiso por paternidad",
+      "request_description": "Solicitud de permiso por paternidad con respaldo documental y validación administrativa.",
+      "id_request_classification": 504,
+      "id_employee": 19
     },
     {
       "id_request": 1012,
-      "name": "Actualización de Datos Personales",
-      "request_description": "Solicitud para actualizar información de contacto.",
-      "id_request_classification": 505
+      "name": "Actualización de datos personales",
+      "request_description": "Cambio de teléfono, domicilio, contacto de emergencia u otra información personal del expediente.",
+      "id_request_classification": 505,
+      "id_employee": 28
     },
     {
       "id_request": 1013,
-      "name": "Cambio de Correo Electrónico",
-      "request_description": "Solicitud para cambiar correo institucional.",
-      "id_request_classification": 505
+      "name": "Cambio de correo institucional",
+      "request_description": "Solicitud de actualización de cuenta de correo institucional o alias interno.",
+      "id_request_classification": 505,
+      "id_employee": 21
     },
     {
       "id_request": 1014,
-      "name": "Recuperación de Contraseña",
-      "request_description": "Solicitud de recuperación de acceso a sistemas.",
-      "id_request_classification": 505
+      "name": "Recuperación de contraseña",
+      "request_description": "Restablecimiento de contraseña para sistemas corporativos y servicios del portal interno.",
+      "id_request_classification": 505,
+      "id_employee": 14
     },
     {
       "id_request": 1015,
-      "name": "Consulta General",
-      "request_description": "Consulta general sobre políticas y procedimientos.",
-      "id_request_classification": 506
+      "name": "Consulta general",
+      "request_description": "Consulta abierta sobre políticas, procesos internos, horarios de atención o documentación requerida.",
+      "id_request_classification": 506,
+      "id_employee": 5
     },
     {
       "id_request": 1016,
-      "name": "Reporte de Falla de Herramientas",
-      "request_description": "Reporte de mal funcionamiento de herramientas de trabajo.",
-      "id_request_classification": 507
+      "name": "Constancia laboral",
+      "request_description": "Solicitud de constancia laboral para trámites bancarios, escolares o personales.",
+      "id_request_classification": 506,
+      "id_employee": 24
     },
     {
       "id_request": 1017,
-      "name": "Solicitud de Reemplazo de EPP",
-      "request_description": "Solicitud de reemplazo de equipo de protección personal.",
-      "id_request_classification": 507
+      "name": "Orientación sobre beneficios",
+      "request_description": "Consulta guiada sobre prestaciones, programas internos y beneficios activos para el colaborador.",
+      "id_request_classification": 506,
+      "id_employee": 9
+    },
+    {
+      "id_request": 1018,
+      "name": "Reimpresión de recibo fiscal",
+      "request_description": "Solicitud de reimpresión de CFDI o documento timbrado correspondiente a nómina.",
+      "id_request_classification": 501,
+      "id_employee": 11
+    },
+    {
+      "id_request": 1019,
+      "name": "Simulación de crédito Infonavit",
+      "request_description": "Orientación sobre capacidad estimada de crédito y escenarios de aportación.",
+      "id_request_classification": 502,
+      "id_employee": 26
+    },
+    {
+      "id_request": 1020,
+      "name": "Actualización de beneficiarios",
+      "request_description": "Registro o modificación de beneficiarios asociados a prestaciones y expedientes internos.",
+      "id_request_classification": 505,
+      "id_employee": 17
+    },
+    {
+      "id_request": 1021,
+      "name": "Permiso por cita médica",
+      "request_description": "Solicitud de permiso parcial para asistir a consulta médica con retorno programado a planta.",
+      "id_request_classification": 504,
+      "id_employee": 13
     }
   ],
   "employee_requests": [
@@ -2285,51 +2324,51 @@
       "id_request_event": 9001,
       "id_employee": 3,
       "id_request": 1008,
-      "event_date": "2026-06-01T08:00:00Z",
+      "event_date": "2026-06-02T08:00:00Z",
       "register_date": "2026-05-04T14:30:00Z",
       "amount": 5,
       "status": "aprobado",
-      "notes": "Vacaciones aprobadas para la primera semana de junio."
+      "notes": "Vacaciones aprobadas para la primera semana de junio en temporada baja."
     },
     {
       "id_request_event": 9002,
-      "id_employee": 7,
-      "id_request": 1008,
-      "event_date": "2026-07-10T08:00:00Z",
-      "register_date": "2026-05-05T10:15:00Z",
-      "amount": 10,
-      "status": "pendiente",
-      "notes": "Solicitud en revisión."
-    },
-    {
-      "id_request_event": 9003,
       "id_employee": 15,
       "id_request": 1001,
       "event_date": "2026-05-05T09:00:00Z",
       "register_date": "2026-05-05T08:30:00Z",
       "amount": null,
       "status": "completado",
-      "notes": "Comprobante de nómina generado y enviado."
+      "notes": "Comprobante de nómina generado y enviado al correo institucional."
+    },
+    {
+      "id_request_event": 9003,
+      "id_employee": 30,
+      "id_request": 1002,
+      "event_date": "2026-05-05T12:00:00Z",
+      "register_date": "2026-05-05T11:45:00Z",
+      "amount": null,
+      "status": "en_progreso",
+      "notes": "Consulta sobre descuentos de IMSS y préstamo interno en revisión con nóminas."
     },
     {
       "id_request_event": 9004,
-      "id_employee": 28,
-      "id_request": 1012,
-      "event_date": "2026-05-06T09:00:00Z",
-      "register_date": "2026-05-05T14:45:00Z",
+      "id_employee": 22,
+      "id_request": 1003,
+      "event_date": "2026-05-07T10:00:00Z",
+      "register_date": "2026-05-06T16:20:00Z",
       "amount": null,
       "status": "pendiente",
-      "notes": "Cambio de teléfono de contacto solicitado."
+      "notes": "Carta patronal solicitada para integrar expediente de crédito en proceso."
     },
     {
       "id_request_event": 9005,
-      "id_employee": 36,
-      "id_request": 1016,
-      "event_date": "2026-05-05T08:00:00Z",
-      "register_date": "2026-05-05T07:45:00Z",
+      "id_employee": 18,
+      "id_request": 1004,
+      "event_date": "2026-05-09T11:00:00Z",
+      "register_date": "2026-05-08T13:05:00Z",
       "amount": null,
-      "status": "en_progreso",
-      "notes": "Falla en compresor de aire, mantenimiento en curso."
+      "status": "completado",
+      "notes": "Se entregó historial de aportaciones de los últimos 24 meses."
     },
     {
       "id_request_event": 9006,
@@ -2339,10 +2378,30 @@
       "register_date": "2026-05-05T10:50:00Z",
       "amount": null,
       "status": "completado",
-      "notes": "Saldo actual: $45,320.00 MXN"
+      "notes": "Saldo actual: $45,320.00 MXN con rendimiento acumulado del trimestre."
     },
     {
       "id_request_event": 9007,
+      "id_employee": 40,
+      "id_request": 1006,
+      "event_date": "2026-05-05T14:00:00Z",
+      "register_date": "2026-05-05T13:30:00Z",
+      "amount": 8000,
+      "status": "aprobado",
+      "notes": "Retiro extraordinario aprobado y programado para dispersión en 24 horas."
+    },
+    {
+      "id_request_event": 9008,
+      "id_employee": 12,
+      "id_request": 1007,
+      "event_date": "2026-05-12T08:00:00Z",
+      "register_date": "2026-05-11T17:10:00Z",
+      "amount": 1200,
+      "status": "completado",
+      "notes": "Incremento de aportación voluntaria aplicado para la próxima quincena."
+    },
+    {
+      "id_request_event": 9009,
       "id_employee": 10,
       "id_request": 1009,
       "event_date": "2026-05-13T08:00:00Z",
@@ -2352,7 +2411,7 @@
       "notes": "Permiso temporal aprobado por emergencia familiar."
     },
     {
-      "id_request_event": 9008,
+      "id_request_event": 9010,
       "id_employee": 66,
       "id_request": 1010,
       "event_date": "2026-06-15T00:00:00Z",
@@ -2362,24 +2421,104 @@
       "notes": "Baja por maternidad aprobada por 12 semanas."
     },
     {
-      "id_request_event": 9009,
-      "id_employee": 40,
-      "id_request": 1006,
-      "event_date": "2026-05-05T14:00:00Z",
-      "register_date": "2026-05-05T13:30:00Z",
-      "amount": 8000,
+      "id_request_event": 9011,
+      "id_employee": 19,
+      "id_request": 1011,
+      "event_date": "2026-05-20T08:00:00Z",
+      "register_date": "2026-05-06T12:10:00Z",
+      "amount": 5,
       "status": "aprobado",
-      "notes": "Retiro de $8,000.00 MXN aprobado."
+      "notes": "Permiso por paternidad liberado conforme a política vigente."
     },
     {
-      "id_request_event": 9010,
-      "id_employee": 30,
-      "id_request": 1002,
-      "event_date": "2026-05-05T12:00:00Z",
-      "register_date": "2026-05-05T11:45:00Z",
+      "id_request_event": 9012,
+      "id_employee": 28,
+      "id_request": 1012,
+      "event_date": "2026-05-06T09:00:00Z",
+      "register_date": "2026-05-05T14:45:00Z",
       "amount": null,
-      "status": "en_progreso",
-      "notes": "Consulta sobre descuentos de IMSS en revisión."
+      "status": "pendiente",
+      "notes": "Cambio de teléfono y contacto de emergencia capturado para validación."
+    },
+    {
+      "id_request_event": 9013,
+      "id_employee": 21,
+      "id_request": 1013,
+      "event_date": "2026-05-08T10:30:00Z",
+      "register_date": "2026-05-08T09:15:00Z",
+      "amount": null,
+      "status": "completado",
+      "notes": "Nuevo alias institucional activo y comunicado al colaborador."
+    },
+    {
+      "id_request_event": 9014,
+      "id_employee": 14,
+      "id_request": 1014,
+      "event_date": "2026-05-07T07:30:00Z",
+      "register_date": "2026-05-07T07:10:00Z",
+      "amount": null,
+      "status": "completado",
+      "notes": "Contraseña restablecida y acceso recuperado desde kiosco de planta."
+    },
+    {
+      "id_request_event": 9015,
+      "id_employee": 24,
+      "id_request": 1016,
+      "event_date": "2026-05-06T16:00:00Z",
+      "register_date": "2026-05-06T15:45:00Z",
+      "amount": null,
+      "status": "completado",
+      "notes": "Constancia laboral emitida para trámite bancario y enviada en PDF."
+    },
+    {
+      "id_request_event": 9016,
+      "id_employee": 9,
+      "id_request": 1017,
+      "event_date": "2026-05-09T13:00:00Z",
+      "register_date": "2026-05-09T12:20:00Z",
+      "amount": null,
+      "status": "completado",
+      "notes": "Se compartió resumen de beneficios activos y ruta sugerida de trámites."
+    },
+    {
+      "id_request_event": 9017,
+      "id_employee": 11,
+      "id_request": 1018,
+      "event_date": "2026-05-10T09:30:00Z",
+      "register_date": "2026-05-10T09:05:00Z",
+      "amount": null,
+      "status": "completado",
+      "notes": "CFDI de nómina reimpreso y resguardado en expediente digital."
+    },
+    {
+      "id_request_event": 9018,
+      "id_employee": 26,
+      "id_request": 1019,
+      "event_date": "2026-05-12T11:00:00Z",
+      "register_date": "2026-05-12T10:10:00Z",
+      "amount": null,
+      "status": "pendiente",
+      "notes": "Simulación solicitada con escenario de salario variable y ahorro previo."
+    },
+    {
+      "id_request_event": 9019,
+      "id_employee": 17,
+      "id_request": 1020,
+      "event_date": "2026-05-14T10:00:00Z",
+      "register_date": "2026-05-13T16:40:00Z",
+      "amount": null,
+      "status": "aprobado",
+      "notes": "Actualización de beneficiarios autorizada y registrada en expediente."
+    },
+    {
+      "id_request_event": 9020,
+      "id_employee": 13,
+      "id_request": 1021,
+      "event_date": "2026-05-15T12:00:00Z",
+      "register_date": "2026-05-14T18:00:00Z",
+      "amount": 4,
+      "status": "aprobado",
+      "notes": "Permiso por cita médica aprobado por medio turno con retorno confirmado."
     }
   ],
   "workdays": [

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct userScreen: View {
     @EnvironmentObject var currentUser: UserSettings
-    private let defaultPayrollBaseSalary: Double = 18500
     @State private var showNotifications = false
     @State private var checkedTimes: Set<String> = []
     
@@ -66,7 +65,7 @@ struct userScreen: View {
                 companyRFC: "MAB010203ABC",
                 periodStart: Calendar.current.date(byAdding: .day, value: -14, to: .now) ?? .now,
                 periodEnd: .now,
-                baseSalary: defaultPayrollBaseSalary
+                baseSalary: employee.salary
             )
         )
     }
@@ -259,8 +258,31 @@ struct userScreen: View {
                 if let exportURL {
                     ShareLink(item: exportURL) {
                         Text("Compartir nomina")
-                            .font(.headline)
-                            .padding()
+                            .font(.callout.weight(.semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .padding(.horizontal, 28)
+                            .background(
+                                LinearGradient(
+                                    colors: [
+                                        Color(red: 0.0, green: 0.2, blue: 0.4),
+                                        Color(red: 0.0, green: 0.69, blue: 0.94)
+                                    ],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: 3)
+                            .overlay(
+                                Capsule()
+                                    .fill(Color.white.opacity(0.1))
+                                    .blur(radius: 20)
+                                    .frame(height: 20)
+                                    .offset(y: -10),
+                                alignment: .top
+                            )
                     }
                     .padding()
                 }

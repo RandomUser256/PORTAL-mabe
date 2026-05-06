@@ -12,7 +12,7 @@ struct ContentView: View {
     var body: some View {
         TabView {
             //Change preset for dynamic information
-            CategoriesView(options: [CategoryOption(), CategoryOption(), CategoryOption(), CategoryOption()])
+            CategoriesView()
                 .tabItem {
                     Label("Consult", image: "pm_ICON_MENU")
                 }
@@ -24,7 +24,7 @@ struct ContentView: View {
                 }
                 .tag(Tab.profile)
             
-            chatScreen()
+            consultaDinamicaScreen()
                 .tabItem {
                     Label("Chat", image: "pm_ICON_CONSULTADINÁMIC")
                 }
