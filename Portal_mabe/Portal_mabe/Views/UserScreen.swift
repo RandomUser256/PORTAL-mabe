@@ -5,6 +5,12 @@ struct userScreen: View {
     @State private var showNotifications = false
     @State private var checkedTimes: Set<String> = []
 
+    @State private var isProcessingPDF = false
+    
+    @State private var exportURL: URL?
+    @State private var showExporter = false
+    @State private var cleanupTempAfterExport = false
+    
     private var displayName: String {
         [currentUser.user?.name ?? "Nombre", currentUser.user?.middleName ?? "Apellido"]
             .joined(separator: " ")
@@ -45,6 +51,24 @@ struct userScreen: View {
             ]
         }
     }
+    
+    private var payrollGenerator: PayrollPDFGenerator? {
+            guard let employee = currentUser.user else {
+                return nil
+            }
+
+            return PayrollPDFGenerator(
+                employee: employee,
+                info: ExternalPayrollInfo(
+                    companyName: "mabe",
+                    companyAddress: "Av. Industrial 1000, Queretaro, Mexico",
+                    companyRFC: "MAB010203ABC",
+                    periodStart: Calendar.current.date(byAdding: .day, value: -14, to: .now) ?? .now,
+                    periodEnd: .now,
+                    baseSalary: employee.salary
+                )
+            )
+        }
 
     var body: some View {
         NavigationStack {
@@ -193,7 +217,32 @@ struct userScreen: View {
                         .foregroundColor(.main)
                         .padding(.leading)
                     Button {
-                        // TODO: Add functionality
+                        guard let payrollGenerator else {
+                            return
+                        }
+
+                        isProcessingPDF = true
+                        Task {
+                            defer {
+                                Task { @MainActor in
+                                    isProcessingPDF = false
+                                }
+                            }
+
+                            do {
+                                let url = try payrollGenerator.generate()
+                                await MainActor.run {
+                                    exportURL = url
+                                    cleanupTempAfterExport = true
+                                    showExporter = true
+                                }
+                            } catch {
+                                await MainActor.run {
+                                    exportURL = nil
+                                    cleanupTempAfterExport = false
+                                }
+                            }
+                        }
                     } label: {
                         Image("pm_CTA_Boton")
                             .resizable()
@@ -201,48 +250,124 @@ struct userScreen: View {
                     }
                     .buttonStyle(.plain)
                     .padding()
+                    .disabled(currentUser.user == nil || isProcessingPDF)
                 }
                 .padding(.horizontal)
-                
-
             }
-            .toolbar {
-                ToolbarItem {
-                    Button {
-                        showNotifications.toggle()
-                        if showNotifications {
-                            NotificationStore.shared.markAllAsRead()
-                        }
-                    } label: {
-                        ZStack(alignment: .topTrailing) {
-                            ZStack {
-                                Image("pm_ICON_NOTIF")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                            }
-                            .accessibilityLabel("Notificaciones")
-                            if NotificationStore.shared.unreadCount > 0 {
-                                Text("\(NotificationStore.shared.unreadCount)")
-                                    .font(.caption2.weight(.bold))
-                                    .foregroundStyle(.main)
-                                    .padding(4)
-                                    .background(.red, in: Circle())
-                                    .offset(x: 4, y: -4)
-                            }
-                        }
+            .sheet(isPresented: $showExporter, onDismiss: handleExportDismiss) {
+                if let exportURL {
+                    ShareLink(item: exportURL) {
+                        Text("Compartir nomina")
+                            .font(.callout.weight(.semibold))
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .padding(.horizontal, 28)
+                            .background(
+                                LinearGradient(
+                                    colors: [
+                                        Color(red: 0.0, green: 0.2, blue: 0.4),
+                                        Color(red: 0.0, green: 0.69, blue: 0.94)
+                                    ],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .clipShape(Capsule())
+                            .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: 3)
+                            .overlay(
+                                Capsule()
+                                    .fill(Color.white.opacity(0.1))
+                                    .blur(radius: 20)
+                                    .frame(height: 20)
+                                    .offset(y: -10),
+                                alignment: .top
+                            )
                     }
-                    .popover(isPresented: $showNotifications) {
-                        UserNotifView()
-                            .presentationCompactAdaptation(.popover)
-                    }
+                    .padding()
                 }
             }
-            .padding(.horizontal, 30)
-        }
+                    .buttonStyle(.plain)
+                    .padding()
+                }
+                .padding(.horizontal)
+                .toolbar {
+                    ToolbarItem {
+                        Button {
+                            showNotifications.toggle()
+                            if showNotifications {
+                                NotificationStore.shared.markAllAsRead()
+                            }
+                        } label: {
+                            ZStack(alignment: .topTrailing) {
+                                ZStack {
+                                    Image("pm_ICON_NOTIF")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                }
+                                .accessibilityLabel("Notificaciones")
+                                if NotificationStore.shared.unreadCount > 0 {
+                                    Text("\(NotificationStore.shared.unreadCount)")
+                                        .font(.caption2.weight(.bold))
+                                        .foregroundStyle(.main)
+                                        .padding(4)
+                                        .background(.red, in: Circle())
+                                        .offset(x: 4, y: -4)
+                                }
+                            }
+                        }
+                        .popover(isPresented: $showNotifications) {
+                            UserNotifView()
+                                .presentationCompactAdaptation(.popover)
+                        }
+                .padding(.horizontal, 30)
+            }
+
+            }
+            
         .background(Color(.background))
     }
+    
+    private func handleExportDismiss() {
+            if cleanupTempAfterExport, let url = exportURL {
+                try? FileManager.default.removeItem(at: url)
+            }
+            exportURL = nil
+            cleanupTempAfterExport = false
+        }
 }
 
 #Preview {
     userScreen()
+        .environmentObject(UserSettings(user: UserScreenPreviewData.employee))
+}
+
+private enum UserScreenPreviewData {
+    static let department = Department(
+        id_department: 1,
+        name: "Recursos Humanos",
+        department_description: "Gestion administrativa del personal."
+    )
+
+    static let role = Employee_roles(
+        id_employee_role: 1,
+        name: "Analista de Recursos",
+        role_description: "Administracion de personal.",
+        department: department
+    )
+
+    static let employee = Employee(
+        id_employee: 10452,
+        employee_role: role,
+        requests: [],
+        workdays: [],
+        overtime: [],
+        employee_superior: Employee_superior(),
+        name: "Juan",
+        middleName: "Carlos",
+        surname: "Perez",
+        institutional_email: "juan.perez@mabe.com",
+        bankNumber: "1234567890",
+        salary: 12345.4
+    )
 }
