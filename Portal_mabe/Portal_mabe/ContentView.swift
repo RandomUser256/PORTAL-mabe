@@ -14,19 +14,28 @@ struct ContentView: View {
             //Change preset for dynamic information
             CategoriesView()
                 .tabItem {
-                    Label("Consult", image: "pm_ICON_MENU")
+                    Image("pm_ICON_MENU")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+
                 }
                 .tag(Tab.consult)
             
             userScreen()
                 .tabItem {
-                    Label("Profile", image: "pm_ICON_PERFIL")
+                    Image("pm_ICON_PERFIL")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+
                 }
                 .tag(Tab.profile)
             
             consultaDinamicaScreen()
                 .tabItem {
-                    Label("Chat", image: "pm_ICON_CONSULTADINÁMIC")
+                    Image("pm_ICON_CONSULTADINAMIC")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+
                 }
                 .tag(Tab.chat)
         }

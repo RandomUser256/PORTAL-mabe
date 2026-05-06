@@ -21,8 +21,6 @@ struct consultaDinamicaScreen: View {
     @State private var prompt = ""
     /// Tracks whether the assistant is currently generating a response.
     @State private var isLoading = false
-    /// Selects which system prompt profile will shape the assistant's tone and constraints.
-    @State private var selectedPersonality: ChatPersonality = .amaro
     /// Stores the visible conversation in chronological order for rendering and persistence.
     @State private var conversation: [ChatMessage] = [] // Oldest-first (top)
     /// Indicates whether live speech transcription is in progress.
@@ -36,9 +34,14 @@ struct consultaDinamicaScreen: View {
     // Lazily built on first .onAppear so modelContext is available.
     @State private var orchestrator: ChatOrchestrator?
     @State private var hasRequestedNotificationPermission = false
+    
+    // Feedback popup state
+    @State private var showFeedbackPopup = false
+    @State private var feedbackMessageId: UUID?
+    @State private var feedbackTimer: Task<Void, Never>?
 
-    private let chatBackground = Color(.secondary)
-    private let cardFill = Color(.background)
+    private let chatBackground = Color(.background)
+    private let cardFill = Color(.secondary).opacity(0.55)
 
     // Simple chat message model for the transcript
     private struct ChatMessage: Identifiable, Equatable, Codable {
@@ -47,12 +50,14 @@ struct consultaDinamicaScreen: View {
         let role: Role
         let text: String
         let context: [String]?
+        var feedbackGiven: Bool = false // Track if feedback was already provided
 
-        init(id: UUID = UUID(), role: Role, text: String, context: [String]?) {
+        init(id: UUID = UUID(), role: Role, text: String, context: [String]?, feedbackGiven: Bool = false) {
             self.id = id
             self.role = role
             self.text = text
             self.context = context
+            self.feedbackGiven = feedbackGiven
         }
     }
 
@@ -60,9 +65,10 @@ struct consultaDinamicaScreen: View {
     /// Builds the ChatOrchestrator once we have access to the SwiftData ModelContext.
     private func makeOrchestrator(context: ModelContext) -> ChatOrchestrator {
         let retriever = KnowledgeRetriever(sources: [
-            //MedicineDatabaseSource(context: context),   // ← live DB source
-            //MockFAQSource(),
-            //MockAnalyticsSource()
+            EmployeeDatabaseSource(context: context, maxResults: 5),
+            DepartmentDatabaseSource(context: context, maxResults: 3),
+            RequestDatabaseSource(context: context, maxResults: 5),
+            WorkScheduleDatabaseSource(context: context, maxResults: 5)
         ])
         return ChatOrchestrator(retriever: retriever)
     }
@@ -73,7 +79,7 @@ struct consultaDinamicaScreen: View {
         let isUser = (role == .user)
         return Text(text)
             .font(.system(size: textSize))
-            .foregroundStyle(isUser ? .black : .main)
+            .foregroundStyle(isUser ? .main : .black)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .background(
@@ -116,8 +122,8 @@ struct consultaDinamicaScreen: View {
     private var headerBar: some View {
         HStack {
             Text("Consulta Dinámica")
-                .font(Font.largeTitle.bold())
-                .foregroundColor(.main)
+                .font(.custom("Futura Bold", size: 60))
+                .foregroundColor(.black)
             Spacer()
         }
         .padding(.horizontal)
@@ -142,21 +148,26 @@ struct consultaDinamicaScreen: View {
         prompt = ""
 
         Task {
-            let answer = await orchestrator.answer(userQuery: query, personality: selectedPersonality, detailed: isDetailed)
+            let answer = await orchestrator.answer(userQuery: query, detailed: isDetailed)
 
-            /// Append the used context text at the end of the assistant's response for transparency.
-            var contentWithContext = answer.content
+            /// Build the complete response with retrieval explanation and context
+            var fullResponse = answer.retrievalExplanation + "\n\n" + answer.content
+            
             if !answer.usedContext.isEmpty {
+                fullResponse += "\n\n📊 Detalles de la base de datos consultada:"
                 let contextBlock = answer.usedContext.enumerated()
-                    .map { "\($0 + 1). \($1)" }
-                    .joined(separator: "\n")
-                contentWithContext += "\n\nContexto usado:\n" + contextBlock
+                    .map { "\n\n[\($0 + 1)] \($1)" }
+                    .joined()
+                fullResponse += contextBlock
             }
 
-            let assistant = ChatMessage(role: .assistant, text: contentWithContext, context: answer.usedContext)
+            let assistant = ChatMessage(role: .assistant, text: fullResponse, context: answer.usedContext)
             await MainActor.run {
                 self.conversation.append(assistant)
                 self.isLoading = false
+                
+                // Schedule feedback popup for this message
+                self.scheduleFeedbackPopup(for: assistant.id)
             }
         }
     }
@@ -183,6 +194,121 @@ struct consultaDinamicaScreen: View {
         conversation.removeAll()
         //saveConversation()
         prompt = ""
+    }
+    
+    /// Schedules a feedback popup to appear after a delay
+    private func scheduleFeedbackPopup(for messageId: UUID) {
+        // Cancel any existing timer
+        feedbackTimer?.cancel()
+        
+        // Schedule new feedback popup after 3 seconds
+        feedbackTimer = Task {
+            try? await Task.sleep(for: .seconds(3))
+            
+            guard !Task.isCancelled else { return }
+            
+            await MainActor.run {
+                // Only show if feedback hasn't been given yet
+                if let message = conversation.first(where: { $0.id == messageId }),
+                   !message.feedbackGiven {
+                    self.feedbackMessageId = messageId
+                    self.showFeedbackPopup = true
+                }
+            }
+        }
+    }
+    
+    /// Saves user feedback to the database
+    private func saveFeedback(isPositive: Bool) {
+        guard let messageId = feedbackMessageId,
+              let assistantMessageIndex = conversation.firstIndex(where: { $0.id == messageId }),
+              assistantMessageIndex > 0 else { return }
+        
+        let assistantMessage = conversation[assistantMessageIndex]
+        let userMessage = conversation[assistantMessageIndex - 1]
+        
+        // Create and save feedback
+        let feedback = ChatFeedback(
+            userQuery: userMessage.text,
+            assistantResponse: assistantMessage.text,
+            isPositive: isPositive,
+            userId: currentUser.user?.institutional_email,
+            contextUsed: assistantMessage.context
+        )
+        
+        modelContext.insert(feedback)
+        
+        // Mark feedback as given
+        conversation[assistantMessageIndex].feedbackGiven = true
+        
+        // Hide popup
+        showFeedbackPopup = false
+        feedbackMessageId = nil
+    }
+    
+    /// Feedback popup view
+    private var feedbackPopup: some View {
+        VStack(spacing: 16) {
+            Text("¿Fue útil la información?")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.black)
+            
+            HStack(spacing: 24) {
+                // Thumbs up button
+                Button(action: {
+                    saveFeedback(isPositive: true)
+                }) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "hand.thumbsup.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.green)
+                        Text("Sí")
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Thumbs up - La información fue útil")
+                
+                // Thumbs down button
+                Button(action: {
+                    saveFeedback(isPositive: false)
+                }) {
+                    VStack(spacing: 8) {
+                        Image(systemName: "hand.thumbsdown.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.red)
+                        Text("No")
+                            .font(.system(size: 14))
+                            .foregroundColor(.black)
+                    }
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Thumbs down - La información no fue útil")
+            }
+            
+            // Dismiss button
+            Button(action: {
+                showFeedbackPopup = false
+                feedbackMessageId = nil
+            }) {
+                Text("Cerrar")
+                    .font(.system(size: 14))
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(.background))
+                .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color(.secondary).opacity(0.3), lineWidth: 1)
+        )
+        .padding(.horizontal, 40)
     }
 
     var body: some View {
@@ -284,7 +410,21 @@ struct consultaDinamicaScreen: View {
                     .background(RoundedRectangle(cornerRadius: 12).fill(Color(.foreground)))
                     .tint(.universalAccent)*/
             }
+            
+            // Feedback popup overlay
+            if showFeedbackPopup {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showFeedbackPopup = false
+                        feedbackMessageId = nil
+                    }
+                
+                feedbackPopup
+                    .transition(.scale.combined(with: .opacity))
+            }
         }
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showFeedbackPopup)
         .navigationBarBackButtonHidden(false)
     }
 }

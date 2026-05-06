@@ -1,4 +1,4 @@
-import Foundation
+/*import Foundation
 
 /// Defines the available assistant personas and the system instructions that constrain each one.
 enum ChatPersonality: String, CaseIterable, Identifiable {
@@ -25,3 +25,4 @@ enum ChatPersonality: String, CaseIterable, Identifiable {
         }
     }
 }
+*/

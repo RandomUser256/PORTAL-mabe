@@ -82,6 +82,7 @@ struct Portal_mabeApp: App {
             Request_class.self,
             Requests.self,
             Workday.self,
+            ChatFeedback.self,
             configurations: config
         )
         

@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2DD224E62FAAB3F5005679B6 /* FEEDBACK_QUICKSTART.md in Resources */ = {isa = PBXBuildFile; fileRef = 2DD224E52FAAB3F5005679B6 /* FEEDBACK_QUICKSTART.md */; };
+		2DD224E82FAAB406005679B6 /* FeedbackPopupPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DD224E72FAAB406005679B6 /* FeedbackPopupPreview.swift */; };
 		8846285F2FAA2DD60073DDFA /* TPPDF in Frameworks */ = {isa = PBXBuildFile; productRef = 8846285E2FAA2DD60073DDFA /* TPPDF */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2DD222E52FA9BE54005679B6 /* Portal_mabe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Portal_mabe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DD224E52FAAB3F5005679B6 /* FEEDBACK_QUICKSTART.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FEEDBACK_QUICKSTART.md; sourceTree = "<group>"; };
+		2DD224E72FAAB406005679B6 /* FeedbackPopupPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackPopupPreview.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,6 +43,8 @@
 			children = (
 				2DD222C02FA9B562005679B6 /* Portal_mabe */,
 				2DD222E52FA9BE54005679B6 /* Portal_mabe.app */,
+				2DD224E52FAAB3F5005679B6 /* FEEDBACK_QUICKSTART.md */,
+				2DD224E72FAAB406005679B6 /* FeedbackPopupPreview.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,6 +116,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DD224E62FAAB3F5005679B6 /* FEEDBACK_QUICKSTART.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DD224E82FAAB406005679B6 /* FeedbackPopupPreview.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
