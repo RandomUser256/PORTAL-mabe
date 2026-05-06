@@ -1,0 +1,105 @@
+//
+//  BootUpScreen.swift
+//  Portal_mabe
+//
+//  Created by Máximo Magallanes Urtuzuástegui on 05/05/26.
+//
+import SwiftUI
+
+/// Shows the app's launch state while the local medicine database is being prepared.
+struct BootUpScreen: View {
+    let isDataReady: Bool
+    let loadingMessage: String
+    let onContinue: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color(.systemGroupedBackground)
+                .ignoresSafeArea()
+
+            VStack(spacing: 24) {
+                Spacer()
+
+                VStack(spacing: 18) {
+                    ZStack {
+                        Circle()
+                            .fill(.main.opacity(0.4))
+                            .frame(width: 124, height: 124)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color(.black), lineWidth: 2)
+                            )
+
+                        Image("Logo")
+                            .font(.system(size: 52, weight: .semibold))
+                            .foregroundStyle(.green)
+                    }
+
+                    VStack(spacing: 8) {
+                        Text("Portal mabe")
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundStyle(.black)
+
+                        /*Text("")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundStyle(.primary)
+                         */
+                    }
+                }
+
+                VStack(spacing: 14) {
+                    Button(action: onContinue) {
+                        HStack(spacing: 10) {
+                            if !isDataReady {
+                                ProgressView()
+                                    .tint(.green)
+                            }
+
+                            Text(isDataReady ? "Continuar" : "Cargando datos…")
+                                .font(.system(size: 18, weight: .semibold))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 18)
+                        .background(
+                            RoundedRectangle(cornerRadius: 18)
+                                .fill(Color(.main).opacity(isDataReady ? 0.4 : 0.2))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 18)
+                                        .stroke(Color(.black), lineWidth: 1.5)
+                                )
+                        )
+                    }
+                    .disabled(!isDataReady)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(isDataReady ? .main : .secondary)
+                    .accessibilityLabel(isDataReady ? "Continuar" : "Carga de datos en progreso")
+                    .accessibilityHint(isDataReady ? "Abre el menú principal" : "Espera a que la base de datos termine de cargarse")
+
+                    Text(loadingMessage)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.horizontal, 28)
+
+                Spacer()
+
+                Text("mabe")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .padding(.bottom, 18)
+                    .padding(.horizontal, 24)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
+        }
+    }
+}
+
+#Preview {
+    BootUpScreen(
+        isDataReady: false,
+        loadingMessage: "Verificando la base local de medicamentos…",
+        onContinue: {}
+    )
+}

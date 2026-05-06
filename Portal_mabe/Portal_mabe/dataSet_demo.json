@@ -1,0 +1,151 @@
+{
+  "categories": [
+    {
+      "id": 501,
+      "name": "Nóminas y Descuentos",
+      "description": "Consultas y movimientos relacionados con recibos de nómina, descuentos aplicados, bonos, aclaraciones de pago y documentos fiscales del colaborador.",
+      "requests": [
+        {
+          "id": 1001,
+          "name": "Solicitud de nómina",
+          "description": "Generación o reenvío del recibo de nómina más reciente para consulta o impresión."
+        },
+        {
+          "id": 1002,
+          "name": "Aclaración de descuentos",
+          "description": "Revisión de descuentos aplicados en nómina por faltas, préstamos, IMSS u otros conceptos."
+        },
+        {
+          "id": 1018,
+          "name": "Reimpresión de recibo fiscal",
+          "description": "Solicitud de reimpresión de CFDI o documento timbrado correspondiente a nómina."
+        }
+      ]
+    },
+    {
+      "id": 502,
+      "name": "Créditos y Aportaciones Infonavit",
+      "description": "Seguimiento de créditos hipotecarios, cartas patronales, aclaraciones de aportaciones y trámites vinculados con Infonavit.",
+      "requests": [
+        {
+          "id": 1003,
+          "name": "Carta patronal Infonavit",
+          "description": "Emisión de carta patronal para integrar expediente de crédito o reestructura Infonavit."
+        },
+        {
+          "id": 1004,
+          "name": "Consulta de aportaciones Infonavit",
+          "description": "Consulta del histórico de aportaciones patronales registradas ante Infonavit."
+        },
+        {
+          "id": 1019,
+          "name": "Simulación de crédito Infonavit",
+          "description": "Orientación sobre capacidad estimada de crédito y escenarios de aportación."
+        }
+      ]
+    },
+    {
+      "id": 503,
+      "name": "Caja de Ahorro",
+      "description": "Operaciones frecuentes de consulta, ingreso, retiro y actualización de metas para la caja de ahorro del personal.",
+      "requests": [
+        {
+          "id": 1005,
+          "name": "Consulta caja de ahorro",
+          "description": "Consulta del saldo disponible, movimientos recientes y rendimiento acumulado en caja de ahorro."
+        },
+        {
+          "id": 1006,
+          "name": "Retiro caja de ahorro",
+          "description": "Solicitud de retiro parcial o total de fondos registrados en la caja de ahorro."
+        },
+        {
+          "id": 1007,
+          "name": "Ingreso caja de ahorro",
+          "description": "Alta o incremento de aportación voluntaria a la caja de ahorro del colaborador."
+        }
+      ]
+    },
+    {
+      "id": 504,
+      "name": "Permisos y Beneficios",
+      "description": "Solicitudes de vacaciones, permisos especiales, beneficios por maternidad o paternidad y otros apoyos administrados por Recursos Humanos.",
+      "requests": [
+        {
+          "id": 1008,
+          "name": "Solicitud vacaciones",
+          "description": "Solicitud de días de vacaciones con validación de saldo disponible y autorización del jefe directo."
+        },
+        {
+          "id": 1009,
+          "name": "Permiso personal",
+          "description": "Solicitud de permiso temporal por asuntos personales o familiares con impacto en jornada."
+        },
+        {
+          "id": 1010,
+          "name": "Baja por maternidad",
+          "description": "Registro y seguimiento de incapacidad o baja por maternidad conforme a lineamientos vigentes."
+        },
+        {
+          "id": 1011,
+          "name": "Permiso por paternidad",
+          "description": "Solicitud de permiso por paternidad con respaldo documental y validación administrativa."
+        },
+        {
+          "id": 1021,
+          "name": "Permiso por cita médica",
+          "description": "Solicitud de permiso parcial para asistir a consulta médica con retorno programado a planta."
+        }
+      ]
+    },
+    {
+      "id": 505,
+      "name": "Actualización de Datos y Accesos",
+      "description": "Cambios de datos personales, actualización de contactos, recuperación de accesos y ajustes en cuentas institucionales.",
+      "requests": [
+        {
+          "id": 1012,
+          "name": "Actualización de datos personales",
+          "description": "Cambio de teléfono, domicilio, contacto de emergencia u otra información personal del expediente."
+        },
+        {
+          "id": 1013,
+          "name": "Cambio de correo institucional",
+          "description": "Solicitud de actualización de cuenta de correo institucional o alias interno."
+        },
+        {
+          "id": 1014,
+          "name": "Recuperación de contraseña",
+          "description": "Restablecimiento de contraseña para sistemas corporativos y servicios del portal interno."
+        },
+        {
+          "id": 1020,
+          "name": "Actualización de beneficiarios",
+          "description": "Registro o modificación de beneficiarios asociados a prestaciones y expedientes internos."
+        }
+      ]
+    },
+    {
+      "id": 506,
+      "name": "Temas Generales",
+      "description": "Espacio para consultas administrativas generales, seguimiento de políticas internas y orientación sobre procesos del portal.",
+      "requests": [
+        {
+          "id": 1015,
+          "name": "Consulta general",
+          "description": "Consulta abierta sobre políticas, procesos internos, horarios de atención o documentación requerida."
+        },
+        {
+          "id": 1016,
+          "name": "Constancia laboral",
+          "description": "Solicitud de constancia laboral para trámites bancarios, escolares o personales."
+        },
+        {
+          "id": 1017,
+          "name": "Orientación sobre beneficios",
+          "description": "Consulta guiada sobre prestaciones, programas internos y beneficios activos para el colaborador."
+        }
+      ]
+    }
+  ]
+}

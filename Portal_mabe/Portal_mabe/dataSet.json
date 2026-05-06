@@ -1,0 +1,169 @@
+{
+  "departments": [
+    {
+      "id_department": 1,
+      "name": "General Management",
+      "department_description": "Strategic oversight of the electro-domestic production facility."
+    },
+    {
+      "id_department": 2,
+      "name": "Production",
+      "department_description": "Main assembly lines and component fabrication (Metals and Plastics)."
+    },
+    {
+      "id_department": 3,
+      "name": "Human Resources",
+      "department_description": "Personnel management, recruitment, and workplace safety."
+    },
+    {
+      "id_department": 4,
+      "name": "Maintenance",
+      "department_description": "Preventive and corrective maintenance of industrial machinery."
+    }
+  ],
+  "employee_roles": [
+    {
+      "id_employee_role": 101,
+      "name": "Plant Manager",
+      "id_department": 1,
+      "role_description": "Overall head of facility operations."
+    },
+    {
+      "id_employee_role": 102,
+      "name": "Production Manager",
+      "id_department": 2,
+      "role_description": "Oversees all assembly and fabrication lines."
+    },
+    {
+      "id_employee_role": 103,
+      "name": "Human Resource Manager",
+      "id_department": 3,
+      "role_description": "Head of administrative and staff welfare."
+    },
+    {
+      "id_employee_role": 104,
+      "name": "Production Line Chief 1",
+      "id_department": 2,
+      "role_description": "Supervises the Refrigerator Assembly line."
+    },
+    {
+      "id_employee_role": 105,
+      "name": "Metals Plastics and Paint Production Auxiliary",
+      "id_department": 2,
+      "role_description": "Operates specialized casing machinery."
+    },
+    {
+      "id_employee_role": 106,
+      "name": "Electrical Technician",
+      "id_department": 4,
+      "role_description": "Maintains PLC systems and electrical circuits."
+    }
+  ],
+  "employees": [
+    {
+      "id_employee": 1,
+      "id_employee_role": 101,
+      "name": "Carlos",
+      "middleName": "Alberto",
+      "surname": "Villagrán",
+      "second_surname": "Sosa",
+      "institutional_email": "c.villagran@electroplant.com",
+      "birthday": "1978-05-12T09:00:00Z",
+      "emergency_contact": "+525551234567",
+      "phone": "+525559876543",
+      "socialSecurityNumber": "IMSS-78-90-11-22",
+      "bankNumber": "MX76012345678901234567",
+      "superior_id": null,
+      "salary": 0.0
+    },
+    {
+      "id_employee": 2,
+      "id_employee_role": 102,
+      "name": "Elena",
+      "middleName": null,
+      "surname": "Márquez",
+      "second_surname": "Ruiz",
+      "institutional_email": "e.marquez@electroplant.com",
+      "birthday": "1985-08-22T09:00:00Z",
+      "emergency_contact": "+525553334444",
+      "phone": "+525551112222",
+      "socialSecurityNumber": "IMSS-85-44-33-22",
+      "bankNumber": "MX76012345678901239999",
+      "superior_id": 1,
+      "salary": 0.0
+    },
+    {
+      "id_employee": 3,
+      "id_employee_role": 105,
+      "name": "Roberto",
+      "middleName": "Javier",
+      "surname": "Gómez",
+      "second_surname": "Hernández",
+      "institutional_email": "r.gomez@electroplant.com",
+      "birthday": "1992-11-03T09:00:00Z",
+      "emergency_contact": "+525550001111",
+      "phone": "+525557778888",
+      "socialSecurityNumber": "IMSS-92-11-03-88",
+      "bankNumber": "MX76012345678901237777",
+      "superior_id": 2,
+      "salary": 0.0
+    }
+  ],
+  "request_classes": [
+    {
+      "id_request_classification": 501,
+      "name": "Payroll",
+      "id_department": 3,
+      "request_class_description": "Inquiries regarding salary, bonuses, and deductions."
+    },
+    {
+      "id_request_classification": 502,
+      "name": "Equipment",
+      "id_department": 4,
+      "request_class_description": "Reports for tool failure or PPE replacement."
+    }
+  ],
+  "requests": [
+    {
+      "id_request": 1001,
+      "name": "Vacation Request",
+      "request_description": "Request for 5 days of annual leave.",
+      "id_request_classification": 501,
+      "id_employee": 3
+    }
+  ],
+  "employee_requests": [
+    {
+      "id_request_event": 9001,
+      "id_employee": 3,
+      "id_request": 1001,
+      "event_date": "2026-06-01T08:00:00Z",
+      "register_date": "2026-05-04T14:30:00Z",
+      "amount": 5
+    }
+  ],
+  "workdays": [
+    {
+      "id_employee": 3,
+      "weekDay": 1,
+      "startTime": "2026-05-04T07:00:00Z",
+      "endTime": "2026-05-04T16:00:00Z"
+    },
+    {
+      "id_employee": 3,
+      "weekDay": 2,
+      "startTime": "2026-05-05T07:00:00Z",
+      "endTime": "2026-05-05T16:00:00Z"
+    }
+  ],
+  "overtime": [
+    {
+      "id_overtime": 8001,
+      "weekDay": 1,
+      "hours": 2,
+      "approved": true,
+      "Notes": "Extra demand on Refrigerator casing line.",
+      "id_employee": 3
+    }
+  ]
+}
